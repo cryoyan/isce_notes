@@ -11,11 +11,25 @@ The resulting image takes up about 700 Mb of disk space.
 ```
 wget https://imaging.unavco.org/software/ISCE/isce-2.2.0.tar.bz2
 docker build --rm -t isce:v2.2.0 . 
+or 
+docker build -t isce2 . 
 ```
 
 ## Run ISCE in an interactive Docker Container
 ```
 docker run -it --rm isce:v2.2.0 /bin/bash
+```
+## Run ISCE on the host machine (ubuntu)
+```
+docker run -d -v $HOME/Data:$HOME/Data --user 1002:1002 -w=$HOME/Data -it isce2
+# -d: detach after start the docker
+# --user: assign the user and group id (get by 'cat /etc/passwd | grep $(whoami)') on the host machine
+# $HOME/Data: the workdir where you are going to play with ISCE
+
+# get container id (-q: only get the id, -l: get the latest one)
+container_id=$(docker ps --filter "ancestor=isce2:latest" -q -l)
+# run ISCE outside the docker container
+docker exec -it ${container_id} insarApp.py
 ```
 
 ## Mapping a local folder (where you have SAR data stored)

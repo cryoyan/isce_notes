@@ -37,11 +37,12 @@ ENV ISCE_HOME $ISCE_ROOT/isce
 ENV PATH $ISCE_HOME/bin:$ISCE_HOME/applications:$PATH
 ENV PYTHONPATH $ISCE_ROOT:$ISCE_HOME/applications:$ISCE_HOME/component
 
-# Don't run container as root user
-RUN groupadd -r ubuntu && \
-    useradd -r -l -s /bin/bash -g ubuntu ubuntu
-USER ubuntu
-WORKDIR /home/ubuntu
+# Don't run container as root user,
+# assign the user name (by set --user userID:groupID on Ubuntu) when start the container
+#RUN groupadd -r ubuntu && \
+#    useradd -r -l -s /bin/bash -g ubuntu ubuntu
+#USER ubuntu
+#WORKDIR /home/ubuntu
 
 # Copy ISCE installation files
 COPY --from=build /opt /opt
