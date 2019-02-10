@@ -4,19 +4,20 @@ FROM ubuntu:18.04 as build
 
 WORKDIR /tmp
 
-COPY isce-2.2.0.tar.bz2 SConfigISCE /tmp/
+COPY SConfigISCE /tmp/
 
 # Update Base Ubuntu installation
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt update && \
-    apt install -y gfortran libmotif-dev libhdf5-dev libfftw3-dev libgdal-dev scons python3 cython3 python3-scipy python3-matplotlib python3-h5py python3-gdal python3-pip && \
+    apt install -y gfortran libmotif-dev libhdf5-dev libfftw3-dev libgdal-dev git scons python3 cython3 python3-scipy python3-matplotlib python3-h5py python3-gdal python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
+# download the latest codes of ISCE from github
+RUN git clone https://github.com/isce-framework/isce2.git isce2-github
+
 # Install ISCE and remove files from /tmp folder
-RUN bunzip2 isce-2.2.0.tar.bz2 && \
-    tar -xf isce-2.2.0.tar && \
-    cd isce-2.2.0 && \
-    export PYTHONPATH=/tmp/isce-2.2.0/configuration && \
+RUN cd isce2-github && \
+    export PYTHONPATH=/tmp/isce2-github/configuration && \
     export SCONS_CONFIG_DIR=/tmp && \
     scons install --skipcheck && \
     rm -rf /tmp/*
@@ -31,7 +32,7 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
 # Setup ISCE environment
-ENV ISCE_ROOT /opt/isce-2.2.0
+ENV ISCE_ROOT /opt/isce2-github
 ENV ISCE_HOME $ISCE_ROOT/isce
 ENV PATH $ISCE_HOME/bin:$ISCE_HOME/applications:$PATH
 ENV PYTHONPATH $ISCE_ROOT:$ISCE_HOME/applications:$ISCE_HOME/component
