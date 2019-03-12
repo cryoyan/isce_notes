@@ -8,8 +8,8 @@ COPY SConfigISCE /tmp/
 
 # Update Base Ubuntu installation
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt update && \
-    apt install -y gfortran libmotif-dev libhdf5-dev libfftw3-dev libgdal-dev git scons python3 cython3 python3-scipy python3-matplotlib python3-h5py python3-gdal python3-pip && \
+RUN apt-get update && \
+    apt-get install -y gfortran libmotif-dev libhdf5-dev libfftw3-dev libgdal-dev git scons python3 cython3 python3-scipy python3-matplotlib python3-h5py python3-gdal python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
 # download the latest codes of ISCE from github
